@@ -80,6 +80,7 @@ float betha = 0;
         glfwTerminate();
         return -1;
     }
+    
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
@@ -87,7 +88,6 @@ float betha = 0;
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         return -1;
     }
-
     glimac::Cone cone(1, 1, 32, 16);
 
     //VBO
@@ -167,7 +167,7 @@ float betha = 0;
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         if (escapePressed) {
-            //GLFWwindowclosefun(window);
+            GLFWwindowclosefun(window);
         }
         glClearColor(1.f, 0.5f, 0.5f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
