@@ -23,58 +23,58 @@ float E = 1;
 float alpha = 0;
 float betha = 0;
 
-static void key_callback(GLFWwindow* /*window*/, int key, int /*scancode*/, int action, int /*mods*/)
-{
-    if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-        alphaAdd += 1/10000;
+    static void key_callback(GLFWwindow* /*window*/, int key, int /*scancode*/, int action, int /*mods*/)
+    {
+        if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+            alphaAdd += 1/10000;
+        }
+
+        if (key == GLFW_KEY_F && action == GLFW_PRESS) {
+            alphaAdd -= 1/10000;
+        }
+
+        if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+            enable = !enable;
+        }
+
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+            escapePressed = true;
+        }
     }
 
-    if (key == GLFW_KEY_F && action == GLFW_PRESS) {
-        alphaAdd -= 1/10000;
+    static void mouse_button_callback(GLFWwindow* /*window*/, int /*button*/, int /*action*/, int /*mods*/)
+    {
     }
 
-    if (key == GLFW_KEY_E && action == GLFW_PRESS) {
-        enable = !enable;
+    static void scroll_callback(GLFWwindow* /*window*/, double /*xoffset*/, double /*yoffset*/)
+    {
     }
 
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-        escapePressed = true;
+    static void cursor_position_callback(GLFWwindow* /*window*/, double /*xpos*/, double /*ypos*/)
+    {
     }
-}
 
-static void mouse_button_callback(GLFWwindow* /*window*/, int /*button*/, int /*action*/, int /*mods*/)
-{
-}
+    static void size_callback(GLFWwindow* /*window*/, int width, int height)
+    {
+        window_width  = width;
+        window_height = height;
+    }
 
-static void scroll_callback(GLFWwindow* /*window*/, double /*xoffset*/, double /*yoffset*/)
-{
-}
-
-static void cursor_position_callback(GLFWwindow* /*window*/, double /*xpos*/, double /*ypos*/)
-{
-}
-
-static void size_callback(GLFWwindow* /*window*/, int width, int height)
-{
-    window_width  = width;
-    window_height = height;
-}
-
-int main(int argc, char** argv)
-{
-    /* Initialize the library */
+    int main(int argc, char** argv)
+    {
+        /* Initialize the library */
     if (!glfwInit()) {
         return -1;
     }
 
     /* Create a window and its OpenGL context */
-#ifdef __APPLE__
-    /* We need to explicitly ask for a 3.3 context on Mac */
+    #ifdef __APPLE__
+        /* We need to explicitly ask for a 3.3 context on Mac */
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
+    #endif
     GLFWwindow* window = glfwCreateWindow(window_width, window_height, "Projet", nullptr, nullptr);
     if (!window) {
         glfwTerminate();
@@ -101,7 +101,7 @@ int main(int argc, char** argv)
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     std::vector<uint32_t> indices;
-    for (int i=0; i < cone.getVertexCount()-1; i++) {
+    for (int i = 0; i < cone.getVertexCount() - 1; i++) {
         indices.push_back(i);
     }
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, cone.getVertexCount() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
@@ -113,7 +113,7 @@ int main(int argc, char** argv)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     const GLuint VERTEX_ATTR_POSITION = 0;
     const GLuint VERTEX_ATTR_NORMAL = 1;
-    const GLuint VERTEX_ATTR_TEXTURE  = 2;
+    const GLuint VERTEX_ATTR_TEXTURE = 2;
     glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
     glEnableVertexAttribArray(VERTEX_ATTR_NORMAL);
     glEnableVertexAttribArray(VERTEX_ATTR_TEXTURE);
@@ -125,8 +125,8 @@ int main(int argc, char** argv)
     glBindVertexArray(0);
 
     glimac::FilePath applicationPath(argv[0]);
-    glimac::Program  program = glimac::loadProgram(applicationPath.dirPath() + ("Projet/shaders/3D.vs.glsl"),
-                                           applicationPath.dirPath() + ("Projet/shaders/normals.fs.glsl"));
+    glimac::Program  program = glimac::loadProgram(applicationPath.dirPath() + ("Proj/shaders/3D.vs.glsl"),
+        applicationPath.dirPath() + ("Proj/shaders/normals.fs.glsl"));
     program.use();
     glGetUniformLocation;
     glEnable(GL_DEPTH_TEST);
@@ -143,19 +143,19 @@ int main(int argc, char** argv)
 
     MVP = perspective(radians(70.f), 1.5f, 0.1f, 100.f);
 
-    BrasMVInit  = scale(BrasMVInit, vec3(E, 2*D+E, E));
-    BrasMVInit  = translate(BrasMVInit, vec3(-(L+D) / 2, 0, -10.0f));
-    BrasMVInit  = rotate(BrasMVInit, 3.1415f, vec3(0, 0, 1));     
+    BrasMVInit = scale(BrasMVInit, vec3(E, 2 * D + E, E));
+    BrasMVInit = translate(BrasMVInit, vec3(-(L + D) / 2, 0, -10.0f));
+    BrasMVInit = rotate(BrasMVInit, 3.1415f, vec3(0, 0, 1));
     BrasNorm = transpose(inverse(BrasMVInit));
 
-    RailMV   = scale(RailMV, vec3(2*E*E, L+D+2*E, E / 4));
-    RailMV   = rotate(RailMV, -3.1415f, vec3(0, 0, 1));
-    RailMV   = translate(RailMV, vec3(0, 0, -10.0f));
+    RailMV = scale(RailMV, vec3(2 * E * E, L + D + 2 * E, E / 4));
+    RailMV = rotate(RailMV, -3.1415f, vec3(0, 0, 1));
+    RailMV = translate(RailMV, vec3(0, 0, -10.0f));
     RailNorm = transpose(inverse(RailMV));
 
-    ArbreMVInit  = scale(ArbreMVInit, vec3(E, L, E));             
-    ArbreMVInit  = translate(ArbreMVInit, vec3(D/2, 0, -10.0f));
-    ArbreMVInit  = rotate(ArbreMVInit, -3.1415f, vec3(0, 0, 1));
+    ArbreMVInit = scale(ArbreMVInit, vec3(E, L, E));
+    ArbreMVInit = translate(ArbreMVInit, vec3(D / 2, 0, -10.0f));
+    ArbreMVInit = rotate(ArbreMVInit, -3.1415f, vec3(0, 0, 1));
     ArbreNorm = transpose(inverse(ArbreMVInit));
 
     glfwSetKeyCallback(window, &key_callback);
@@ -163,11 +163,11 @@ int main(int argc, char** argv)
     glfwSetScrollCallback(window, &scroll_callback);
     glfwSetCursorPosCallback(window, &cursor_position_callback);
     glfwSetWindowSizeCallback(window, &size_callback);
-
+    
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         if (escapePressed) {
-            GLFWwindowclosefun(window);
+            //GLFWwindowclosefun(window);
         }
         glClearColor(1.f, 0.5f, 0.5f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
